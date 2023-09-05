@@ -1,4 +1,4 @@
-import { users, products } from "./dataBase";
+import { users, products, createUser, getAllUsers, createProducts, getAllProducts, getProductsByName, getUsersByName } from "./dataBase";
 
 const initProjet = (num:number):void => {
    
@@ -12,6 +12,14 @@ const initProjet = (num:number):void => {
 setTimeout(():void => {
   console.table(users)
   console.table(products)
+  console.log(createUser('u001','Claudia','claudia@email.com','ZéDaManga'))
+  console.log(createProducts('prod004','Microfone', 350 , 'Melhor experiencia de audio'))
+  console.table(getAllUsers())
+  console.table(getAllProducts())
+  console.table(getProductsByName('C'))
+  console.table(getUsersByName('CLAUDIA'))
+
+
 },4000);
 
 
