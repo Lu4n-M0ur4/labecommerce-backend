@@ -1,28 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.products = exports.users = void 0;
-const utils_1 = require("./utils");
 exports.users = [
     {
         id: 'u001',
         name: 'Fulano',
         email: 'fulano@email.com',
         password: 'fulano123',
-        createdAt: (0, utils_1.createdAt)(),
+        createdAt: new Date().toISOString().valueOf()
     },
     {
         id: 'u002',
         name: 'Ciclano',
         email: 'ciclano@email.com',
         password: 'ciclano123',
-        createdAt: (0, utils_1.createdAt)(),
+        createdAt: new Date().toISOString().valueOf()
     },
     {
         id: 'u003',
         name: 'Beltrano',
         email: 'beltrano@email.com',
         password: 'beltrano123',
-        createdAt: (0, utils_1.createdAt)(),
+        createdAt: new Date().toISOString().valueOf()
     },
 ];
 exports.products = [
