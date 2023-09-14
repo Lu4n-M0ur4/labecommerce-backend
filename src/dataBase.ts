@@ -77,7 +77,7 @@ export const createProducts = (
   name: string,
   price: number,
   description: string,
-): string =>  {
+): string => {
   const newProducts = {
     id,
     name,
@@ -86,9 +86,9 @@ export const createProducts = (
     imageUrl: 'https://picsum.photos/seed/Mouse%20gamer/400',
   }
 
- products.push(newProducts)
+  products.push(newProducts)
 
- return 'Cadastro Realizado com sucesso'
+  return 'Cadastro Realizado com sucesso'
 }
 
 export const getAllProducts = (): TProducts[] =>
@@ -96,12 +96,14 @@ export const getAllProducts = (): TProducts[] =>
     return products
   })
 
-export const getProductsByName = (name: string):TProducts[] =>{
- return  products.filter((product)=> product.name.toLowerCase().includes(name.toLowerCase()))
-
+export const getProductsByName = (name: string): TProducts[] => {
+  return products.filter((product) => {
+    return product.name.toLowerCase().includes(name.toLowerCase())
+  })
 }
 
-export const getUsersByName = (name: string):TUsers[] =>{
-  return  users.filter((user)=> user.name.toLowerCase().includes(name.toLowerCase()))
- 
- }
+export const getUsersByName = (name: string): TUsers[] => {
+  return users.filter((user) =>
+    user.name.toLowerCase().includes(name.toLowerCase()),
+  )
+}
