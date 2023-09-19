@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUsersByName = exports.getProductsByName = exports.getAllProducts = exports.createProducts = exports.getAllUsers = exports.createUser = exports.products = exports.users = void 0;
+exports.updateProducts = exports.updateUser = exports.deleteProductById = exports.deleteUserById = exports.getUsersByName = exports.getProductsByName = exports.getAllProducts = exports.createProducts = exports.getAllUsers = exports.createUser = exports.products = exports.users = void 0;
 exports.users = [
     {
         id: 'u001',
@@ -80,11 +80,47 @@ const getAllProducts = () => exports.products.map((products) => {
 });
 exports.getAllProducts = getAllProducts;
 const getProductsByName = (name) => {
-    return exports.products.filter((product) => product.name.toLowerCase().includes(name.toLowerCase()));
+    return exports.products.filter((product) => {
+        return product.name.toLowerCase().includes(name.toLowerCase());
+    });
 };
 exports.getProductsByName = getProductsByName;
 const getUsersByName = (name) => {
     return exports.users.filter((user) => user.name.toLowerCase().includes(name.toLowerCase()));
 };
 exports.getUsersByName = getUsersByName;
+const deleteUserById = (id) => {
+    const userIndex = exports.users.findIndex((user) => user.id === id);
+    if (userIndex >= 0) {
+        exports.users.splice(userIndex, 1);
+    }
+};
+exports.deleteUserById = deleteUserById;
+const deleteProductById = (id) => {
+    const productIndex = exports.products.findIndex((product) => product.id === id);
+    if (productIndex >= 0) {
+        exports.products.splice(productIndex, 1);
+    }
+};
+exports.deleteProductById = deleteProductById;
+const updateUser = (userIdToEdit, newId, newName, newEmail, newPassword) => {
+    const user = exports.users.find((user) => user.id === userIdToEdit);
+    if (user) {
+        user.id = newId || user.id;
+        user.name = newName || user.name;
+        user.email = newEmail || user.email;
+        user.password = newPassword || user.password;
+    }
+};
+exports.updateUser = updateUser;
+const updateProducts = (userIdToEdit, newId, newName, newPrice, Description) => {
+    const product = exports.products.find((product) => product.id === userIdToEdit);
+    if (product) {
+        product.id = newId || product.id;
+        product.name = newName || product.name;
+        product.price = isNaN(Number(newPrice)) ? product.price : newPrice;
+        product.description = Description || product.description;
+    }
+};
+exports.updateProducts = updateProducts;
 //# sourceMappingURL=dataBase.js.map
