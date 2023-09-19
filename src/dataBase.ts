@@ -107,3 +107,55 @@ export const getUsersByName = (name: string): TUsers[] => {
     user.name.toLowerCase().includes(name.toLowerCase()),
   )
 }
+
+export const deleteUserById = (id: string): void => {
+  const userIndex: number = users.findIndex((user) => user.id === id)
+
+  if (userIndex >= 0) {
+    users.splice(userIndex, 1)
+  }
+}
+
+export const deleteProductById = (id: string): void => {
+  const productIndex: number = products.findIndex(
+    (product) => product.id === id,
+  )
+
+  if (productIndex >= 0) {
+    products.splice(productIndex, 1)
+  }
+}
+
+export const updateUser = (
+  userIdToEdit: string | undefined,
+  newId: string | undefined,
+  newName: string  | undefined,
+  newEmail: string | undefined,
+  newPassword: string | undefined,
+): void => {
+  const user = users.find((user) => user.id === userIdToEdit)
+
+  if (user) {
+    user.id = newId || user.id
+    user.name = newName || user.name
+    user.email = newEmail || user.email
+    user.password = newPassword || user.password
+  }
+}
+
+export const updateProducts = (
+  userIdToEdit: string | undefined,
+  newId: string | undefined,
+  newName: string  | undefined,
+  newPrice: number | undefined,
+  Description: string | undefined,
+): void => {
+  const product = products.find((product) => product.id === userIdToEdit)
+
+  if (product) {
+    product.id = newId || product.id
+    product.name = newName || product.name
+    product.price = isNaN(Number(newPrice)) ?  product.price : newPrice as number
+    product.description = Description || product.description
+  }
+}
