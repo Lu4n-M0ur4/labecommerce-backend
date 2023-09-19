@@ -15,6 +15,7 @@ import {
 import express, { Request, Response } from 'express'
 import cors from 'cors'
 import { TProducts, TUsers } from './types'
+import { error } from 'console'
 
 const app = express()
 app.use(express.json())
@@ -49,7 +50,14 @@ app.listen(3003, () => {
 // Express Api
 
 app.get('/users', (req: Request, res: Response): void => {
+
+try {
+
   res.status(200).send(users)
+} catch (error) {
+  
+}
+
 })
 
 app.get('/products', (req: Request, res: Response): void => {
