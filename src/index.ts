@@ -27,6 +27,7 @@ app.listen(3003, () => {
 app.get('/users', (req: Request, res: Response): void => {
   try {
     res.status(200).send(users)
+    
   } catch (error) {
     if (error instanceof Error) {
       res.send(error.message)
@@ -45,9 +46,10 @@ app.get('/products', (req: Request, res: Response): void => {
 })
 
 app.get('/products/search', (req: Request, res: Response): void => {
-  const q: string = req.query.q as string
-
+  
   try {
+    const q: string = req.query.q as string // pedir uma nova explicação em aula o porque do "as"
+    
     if (!q) {
       res.statusCode = 404
       throw new Error('Digite pelo menos um caracter para buscar!!!')
@@ -116,7 +118,7 @@ app.post('/users', (req: Request, res: Response): void => {
 
     createUser(id, name, email, password)
 
-    res.status(200).send('Cadastro realizado com sucesso')
+    res.status(200).send({message:'Cadastro realizado com sucesso'})
   } catch (error) {
     if (error instanceof Error) {
       res.send(error.message)
@@ -145,7 +147,7 @@ app.post('/products', (req: Request, res: Response): void => {
     }
 
     createProducts(id, name, price, description)
-    res.status(201).send('Produto cadastro realizado com sucesso')
+    res.status(201).send({message:'Produto cadastro realizado com sucesso'})
   } catch (error) {
     if (error instanceof Error) {
       res.send(error.message)
@@ -164,7 +166,7 @@ app.delete('/users/:id', (req: Request, res: Response): void => {
       throw new Error('Usuario não encontrado !!! ')
     }
     deleteUserById(userIdToDelete)
-    res.status(200).send('User deleted successfully')
+    res.status(200).send({message:'User deletado com successo'})
   } catch (error) {
     if (error instanceof Error) {
       res.send(error.message)
@@ -185,7 +187,7 @@ app.delete('/products/:id', (req: Request, res: Response): void => {
       throw new Error('Produto não encontrado !!! ')
     }
     deleteProductById(productsIdToDelete)
-    res.status(200).send('User deleted successfully')
+    res.status(200).send({message:'Produto deletado com successo'})
   } catch (error) {
     if (error instanceof Error) {
       res.send(error.message)
