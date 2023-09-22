@@ -93,83 +93,182 @@ app.post('/users', (req: Request, res: Response): void => {
       typeof id !== 'string' ||
       typeof name !== 'string' ||
       typeof email !== 'string' ||
-      typeof id !== 'string'
+      typeof password !== 'string'
     ) {
       res.statusCode = 404
       throw new Error('Sua requisição necessita de um body')
     }
 
-    const idSearch =  users.find((user) => user.id === id  )
-   
-    if(idSearch !== undefined){
-      res.statusCode=404
+    const idSearch = users.find((user) => user.id === id)
+
+    if (idSearch !== undefined) {
+      res.statusCode = 404
       throw new Error(`Este id '${id}', já existe em nossa base de dados.`)
     }
-    const idEmail =  users.find((user) => user.email === email  )
-   
-    if(idEmail !== undefined){
-      res.statusCode=404
-      throw new Error(`Este e-mail '${email}', já existe em nossa base de dados.`)
+    const idEmail = users.find((user) => user.email === email)
+
+    if (idEmail !== undefined) {
+      res.statusCode = 404
+      throw new Error(
+        `Este e-mail '${email}', já existe em nossa base de dados.`,
+      )
     }
 
     createUser(id, name, email, password)
 
     res.status(200).send('Cadastro realizado com sucesso')
-
   } catch (error) {
     if (error instanceof Error) {
-      
       res.send(error.message)
     }
   }
 })
 
 app.post('/products', (req: Request, res: Response): void => {
-  const { id, name, price, description }: TProducts = req.body
+  try {
+    const { id, name, price, description }: TProducts = req.body
+    if (
+      typeof id !== 'string' ||
+      typeof name !== 'string' ||
+      typeof price !== 'number' ||
+      typeof description !== 'string'
+    ) {
+      res.statusCode = 404
+      throw new Error('Sua requisição necessita de um body')
+    }
 
-  createProducts(id, name, price, description)
+    const productSearch = products.find((product) => product.id === id)
 
-  res.status(201).send('Produto cadastro realizado com sucesso')
+    if (productSearch !== undefined) {
+      res.statusCode = 404
+      throw new Error(`Este id '${id}', já existe em nossa base de dados.`)
+    }
+
+    createProducts(id, name, price, description)
+    res.status(201).send('Produto cadastro realizado com sucesso')
+  } catch (error) {
+    if (error instanceof Error) {
+      res.send(error.message)
+    }
+  }
 })
 
 app.delete('/users/:id', (req: Request, res: Response): void => {
-  const userIdToDelete = req.params.id
+  try {
+    const userIdToDelete = req.params.id
 
-  const results: void = deleteUserById(userIdToDelete)
+    const idSearch = users.find((user) => user.id === userIdToDelete)
 
-  res.status(200).send('User deleted successfully')
+    if (!idSearch) {
+      res.statusCode = 404
+      throw new Error('Usuario não encontrado !!! ')
+    }
+    deleteUserById(userIdToDelete)
+    res.status(200).send('User deleted successfully')
+  } catch (error) {
+    if (error instanceof Error) {
+      res.send(error.message)
+    }
+  }
 })
 
 app.delete('/products/:id', (req: Request, res: Response): void => {
-  const productsIdToDelete = req.params.id
+  try {
+    const productsIdToDelete = req.params.id
 
-  const results: void = deleteProductById(productsIdToDelete)
+    const productSearch = products.find(
+      (product) => product.id === productsIdToDelete,
+    )
 
-  res.status(200).send('Product deleted successfully')
+    if (!productSearch) {
+      res.statusCode = 404
+      throw new Error('Produto não encontrado !!! ')
+    }
+    deleteProductById(productsIdToDelete)
+    res.status(200).send('User deleted successfully')
+  } catch (error) {
+    if (error instanceof Error) {
+      res.send(error.message)
+    }
+  }
 })
 
 app.put('/users/:id', (req: Request, res: Response): void => {
-  const userIdToEdit = req.params.id
+ 
+  try {
+    const userIdToEdit = req.params.id
 
-  const newId = req.body.id as string | undefined
-  const newName = req.body.name as string | undefined
-  const newEmail = req.body.email as string | undefined
-  const newPassword = req.body.password as string | undefined
+    const userSearch = users.find(
+      (user) => user.id === userIdToEdit,
+    )
 
-  updateUser(userIdToEdit, newId, newName, newEmail, newPassword)
+    if (!userSearch) {
+      res.statusCode = 404
+      throw new Error('User não encontrado !!! ')
+    }
 
-  res.status(200).send({ message: 'User updated successfully' })
+    const newId = req.body.id as string | undefined
+    const newName = req.body.name as string | undefined
+    const newEmail = req.body.email as string | undefined
+    const newPassword = req.body.password as string | undefined
+  
+    if (
+      typeof newId !== 'string' ||
+      typeof newName !== 'string' ||
+      typeof newEmail !== 'string' ||
+      typeof newPassword !== 'string'
+    ){
+      res.statusCode = 404
+      throw new Error('Informe o body de maneira correta')
+
+    }
+
+    updateUser(userIdToEdit, newId, newName, newEmail, newPassword)
+    res.status(200).send({ message: 'User updated successfully' })
+
+  } catch (error) {
+    if (error instanceof Error) {
+      res.send(error.message)
+    }
+  }
+
+
 })
 
 app.put('/products/:id', (req: Request, res: Response): void => {
-  const productsIdToEdit = req.params.id
+  try {
+    const productsIdToEdit = req.params.id
 
-  const newId = req.body.id as string | undefined
-  const newName = req.body.name as string | undefined
-  const newPrice = req.body.price as number | undefined
-  const newDescription = req.body.description as string | undefined
+    const productSearch = products.find(
+      (product) => product.id === productsIdToEdit,
+    )
 
-  updateProducts(productsIdToEdit, newId, newName, newPrice, newDescription)
+    if (!productSearch) {
+      res.statusCode = 404
+      throw new Error('Produto não encontrado !!! ')
+    }
 
-  res.status(200).send({ message: 'Product updated successfully' })
+    const newId = req.body.id as string | undefined
+    const newName = req.body.name as string | undefined
+    const newPrice = req.body.price as number | undefined
+    const newDescription = req.body.description as string | undefined
+
+    if (
+      typeof newId !== 'string' ||
+      typeof newName !== 'string' ||
+      typeof newPrice !== 'number' ||
+      typeof newDescription !== 'string'
+    ){
+      res.statusCode = 404
+      throw new Error('Informe o body de maneira correta')
+
+    }
+
+    updateProducts(productsIdToEdit, newId, newName, newPrice, newDescription)
+    res.status(200).send({ message: 'Product updated successfully' })
+  } catch (error) {
+    if (error instanceof Error) {
+      res.send(error.message)
+    }
+  }
 })

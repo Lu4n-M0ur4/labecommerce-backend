@@ -68,16 +68,29 @@ app.get('/users/search', (req, res) => {
 app.post('/users', (req, res) => {
     try {
         const { id, name, email, password } = req.body;
-        if (!req.body) {
+        if (typeof id !== 'string' ||
+            typeof name !== 'string' ||
+            typeof email !== 'string' ||
+            typeof id !== 'string') {
             res.statusCode = 404;
-            throw new Error("Sua requisição necessita de um body");
+            throw new Error('Sua requisição necessita de um body');
+        }
+        const idSearch = dataBase_1.users.find((user) => user.id === id);
+        if (idSearch !== undefined) {
+            res.statusCode = 404;
+            throw new Error(`Este id '${id}', já existe em nossa base de dados.`);
+        }
+        const idEmail = dataBase_1.users.find((user) => user.email === email);
+        if (idEmail !== undefined) {
+            res.statusCode = 404;
+            throw new Error(`Este e-mail '${email}', já existe em nossa base de dados.`);
         }
         (0, dataBase_1.createUser)(id, name, email, password);
-        res.status(201).send('Cadastro realizado com sucesso');
+        res.status(200).send('Cadastro realizado com sucesso');
     }
     catch (error) {
         if (error instanceof Error) {
-            error.message;
+            res.send(error.message);
         }
     }
 });
