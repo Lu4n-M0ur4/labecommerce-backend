@@ -166,7 +166,7 @@ app.delete('/users/:id', (req: Request, res: Response): void => {
       throw new Error('Usuario não encontrado !!! ')
     }
     deleteUserById(userIdToDelete)
-    res.status(200).send({message:'User deletado com successo'})
+    res.status(204).send({message:'Usuario deletado com successo'})
   } catch (error) {
     if (error instanceof Error) {
       res.send(error.message)
@@ -267,7 +267,7 @@ app.put('/products/:id', (req: Request, res: Response): void => {
     }
 
     updateProducts(productsIdToEdit, newId, newName, newPrice, newDescription)
-    res.status(200).send({ message: 'Product updated successfully' })
+    res.status(200).send({ message: 'Produto atualizado com successo' })
   } catch (error) {
     if (error instanceof Error) {
       res.send(error.message)
