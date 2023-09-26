@@ -27,7 +27,7 @@ export const users: TUsers[] = [
 export const products: TProducts[] = [
   {
     id: 'prod001',
-    name: 'Mouse gamer',
+    name: 'Mouse gammer',
     price: 250.0,
     description: 'Melhor mouse do mercado!',
     imageUrl: 'https://picsum.photos/seed/Mouse%20gamer/400',
@@ -41,9 +41,9 @@ export const products: TProducts[] = [
   },
   {
     id: 'prod003',
-    name: 'Cadeira gamer',
+    name: 'Cadeira gammer',
     price: 1100.0,
-    description: 'Cadeira Gamer do Mercado!',
+    description: 'Cadeira Gammer do Mercado!',
     imageUrl: 'https://picsum.photos/seed/Mouse%20gamer/400',
   },
 ]

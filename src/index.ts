@@ -15,7 +15,6 @@ import {
 import express, { Request, Response } from 'express'
 import cors from 'cors'
 import { TProducts, TUsers } from './types'
-import { error } from 'console'
 
 const app = express()
 app.use(express.json())
@@ -25,147 +24,253 @@ app.listen(3003, () => {
   console.log('Servidor rodando na porta 3003')
 })
 
-// const initProjet = (num: number): void => {
-//   for (let i: number = 0; i < num; i++) {
-//     setTimeout((): void => {
-//       console.log(`Carregando dataBase em..... ${num - i}`)
-//     }, i * 1000)
-//   }
-// }
-// initProjet(3)
-
-// Exercicio TS II
-// setTimeout(():void => {
-//   console.table(users)
-//   console.table(products)
-//   console.log(createUser('u001','Claudia','claudia@email.com','ZéDaManga'))
-//   console.log(createProducts('prod004','Microfone', 350 , 'Melhor experiencia de audio'))
-//   console.table(getAllUsers())
-//   console.table(getAllProducts())
-//   console.table(getProductsByName('C'))
-//   console.table(getUsersByName('CLAUDIA'))
-
-// },4000);
-
-// Express Api
-
 app.get('/users', (req: Request, res: Response): void => {
-
-try {
-
-  res.status(200).send(users)
-} catch (error) {
-  
-}
-
+  try {
+    res.status(200).send(users)
+    
+  } catch (error) {
+    if (error instanceof Error) {
+      res.send(error.message)
+    }
+  }
 })
 
 app.get('/products', (req: Request, res: Response): void => {
-  res.status(200).send(products)
+  try {
+    res.status(200).send(products)
+  } catch (error) {
+    if (error instanceof Error) {
+      res.send(error.message)
+    }
+  }
 })
 
 app.get('/products/search', (req: Request, res: Response): void => {
-  const q: string = req.query.q as string
+  
+  try {
+    const q: string = req.query.q as string // pedir uma nova explicação em aula o porque do "as"
+    
+    if (!q) {
+      res.statusCode = 404
+      throw new Error('Digite pelo menos um caracter para buscar!!!')
+    }
 
-  if (!q) {
-    res.status(200).send(products)
-  } else {
-    // const productsFiltered = products.filter((product) =>
-    //   product.name.toLowerCase().includes(q.toLowerCase()),
-    //   )
+    const productsFiltered: TProducts[] = products.filter((product) =>
+      product.name.toLowerCase().includes(q.toLowerCase()),
+    )
 
     const productFiltered: TProducts[] = getProductsByName(q)
 
     res.status(200).send(productFiltered)
+  } catch (error) {
+    if (error instanceof Error) {
+      res.send(error.message)
+    }
   }
 })
 
 app.get('/users/search', (req: Request, res: Response): void => {
   const q: string = req.query.q as string
 
-  if (!q) {
-    res.status(200).send(users)
-  } else {
-    // const usersFiltered = users.filter((user) =>
-    //   user.name.toLowerCase().includes(q.toLowerCase()),
-    // )
+  try {
+    if (!q) {
+      res.statusCode = 404
+      throw new Error('Digite pelo menos um caracter para buscar!!!')
+    }
     const userByName: TUsers[] = getUsersByName(q)
 
     res.status(200).send(userByName)
+  } catch (error) {
+    if (error instanceof Error) {
+      res.send(error.message)
+    }
   }
 })
 
 app.post('/users', (req: Request, res: Response): void => {
-  const { id, name, email, password }: TUsers = req.body
+  try {
+    const { id, name, email, password }: TUsers = req.body
 
-  // const newUsers: TUsers = {
-  //   id,
-  //   name,
-  //   email,
-  //   password,
-  //   createdAt: new Date().toISOString().valueOf(),
-  // }
+    if (
+      typeof id !== 'string' ||
+      typeof name !== 'string' ||
+      typeof email !== 'string' ||
+      typeof password !== 'string'
+    ) {
+      res.statusCode = 404
+      throw new Error('Sua requisição necessita de um body')
+    }
 
-  createUser(id, name, email, password)
+    const idSearch = users.find((user) => user.id === id)
 
-  res.status(201).send('Cadastro realizado com sucesso')
+    if (idSearch !== undefined) {
+      res.statusCode = 404
+      throw new Error(`Este id '${id}', já existe em nossa base de dados.`)
+    }
+    const idEmail = users.find((user) => user.email === email)
+
+    if (idEmail !== undefined) {
+      res.statusCode = 404
+      throw new Error(
+        `Este e-mail '${email}', já existe em nossa base de dados.`,
+      )
+    }
+
+    createUser(id, name, email, password)
+
+    res.status(200).send({message:'Cadastro realizado com sucesso'})
+  } catch (error) {
+    if (error instanceof Error) {
+      res.send(error.message)
+    }
+  }
 })
 
 app.post('/products', (req: Request, res: Response): void => {
-  const { id, name, price, description }: TProducts = req.body
+  try {
+    const { id, name, price, description }: TProducts = req.body
+    if (
+      typeof id !== 'string' ||
+      typeof name !== 'string' ||
+      typeof price !== 'number' ||
+      typeof description !== 'string'
+    ) {
+      res.statusCode = 404
+      throw new Error('Sua requisição necessita de um body')
+    }
 
-  // const newProduct: TProducts = {
-  //   id,
-  //   name,
-  //   price,
-  //   description,
-  //   imageUrl: 'https://picsum.photos/seed/Mouse%20gamer/400',
-  // }
+    const productSearch = products.find((product) => product.id === id)
 
-  // products.push(newProduct)
-  createProducts(id, name, price, description)
+    if (productSearch !== undefined) {
+      res.statusCode = 404
+      throw new Error(`Este id '${id}', já existe em nossa base de dados.`)
+    }
 
-  res.status(201).send('Produto cadastro realizado com sucesso')
+    createProducts(id, name, price, description)
+    res.status(201).send({message:'Produto cadastro realizado com sucesso'})
+  } catch (error) {
+    if (error instanceof Error) {
+      res.send(error.message)
+    }
+  }
 })
 
 app.delete('/users/:id', (req: Request, res: Response): void => {
-  const userIdToDelete = req.params.id
+  try {
+    const userIdToDelete = req.params.id
 
-  const results: void = deleteUserById(userIdToDelete)
+    const idSearch = users.find((user) => user.id === userIdToDelete)
 
-  res.status(200).send('User deleted successfully')
+    if (!idSearch) {
+      res.statusCode = 404
+      throw new Error('Usuario não encontrado !!! ')
+    }
+    deleteUserById(userIdToDelete)
+    res.status(204).send({message:'Usuario deletado com successo'})
+  } catch (error) {
+    if (error instanceof Error) {
+      res.send(error.message)
+    }
+  }
 })
 
 app.delete('/products/:id', (req: Request, res: Response): void => {
-  const productsIdToDelete = req.params.id
+  try {
+    const productsIdToDelete = req.params.id
 
-  const results: void = deleteProductById(productsIdToDelete)
+    const productSearch = products.find(
+      (product) => product.id === productsIdToDelete,
+    )
 
-  res.status(200).send('Product deleted successfully')
+    if (!productSearch) {
+      res.statusCode = 404
+      throw new Error('Produto não encontrado !!! ')
+    }
+    deleteProductById(productsIdToDelete)
+    res.status(200).send({message:'Produto deletado com successo'})
+  } catch (error) {
+    if (error instanceof Error) {
+      res.send(error.message)
+    }
+  }
 })
 
 app.put('/users/:id', (req: Request, res: Response): void => {
-  const userIdToEdit = req.params.id
+ 
+  try {
+    const userIdToEdit = req.params.id
 
-  const newId = req.body.id as string | undefined
-  const newName = req.body.name as string | undefined
-  const newEmail = req.body.email as string | undefined
-  const newPassword = req.body.password as string | undefined
+    const userSearch = users.find(
+      (user) => user.id === userIdToEdit,
+    )
 
-  updateUser(userIdToEdit, newId, newName, newEmail, newPassword)
+    if (!userSearch) {
+      res.statusCode = 404
+      throw new Error('User não encontrado !!! ')
+    }
 
-  res.status(200).send({message:'User updated successfully'})
+    const newId = req.body.id as string | undefined
+    const newName = req.body.name as string | undefined
+    const newEmail = req.body.email as string | undefined
+    const newPassword = req.body.password as string | undefined
+  
+    if (
+      typeof newId !== 'string' ||
+      typeof newName !== 'string' ||
+      typeof newEmail !== 'string' ||
+      typeof newPassword !== 'string'
+    ){
+      res.statusCode = 404
+      throw new Error('Informe o body de maneira correta')
+
+    }
+
+    updateUser(userIdToEdit, newId, newName, newEmail, newPassword)
+    res.status(200).send({ message: 'User updated successfully' })
+
+  } catch (error) {
+    if (error instanceof Error) {
+      res.send(error.message)
+    }
+  }
+
+
 })
 
 app.put('/products/:id', (req: Request, res: Response): void => {
-  const productsIdToEdit = req.params.id
+  try {
+    const productsIdToEdit = req.params.id
 
-  const newId = req.body.id as string | undefined
-  const newName = req.body.name as string | undefined
-  const newPrice = req.body.price as number | undefined
-  const newDescription= req.body.description as string | undefined
+    const productSearch = products.find(
+      (product) => product.id === productsIdToEdit,
+    )
 
-  updateProducts(productsIdToEdit, newId, newName, newPrice, newDescription)
+    if (!productSearch) {
+      res.statusCode = 404
+      throw new Error('Produto não encontrado !!! ')
+    }
 
-  res.status(200).send({message:'Product updated successfully'})
+    const newId = req.body.id as string | undefined
+    const newName = req.body.name as string | undefined
+    const newPrice = req.body.price as number | undefined
+    const newDescription = req.body.description as string | undefined
+
+    if (
+      typeof newId !== 'string' ||
+      typeof newName !== 'string' ||
+      typeof newPrice !== 'number' ||
+      typeof newDescription !== 'string'
+    ){
+      res.statusCode = 404
+      throw new Error('Informe o body de maneira correta')
+
+    }
+
+    updateProducts(productsIdToEdit, newId, newName, newPrice, newDescription)
+    res.status(200).send({ message: 'Produto atualizado com successo' })
+  } catch (error) {
+    if (error instanceof Error) {
+      res.send(error.message)
+    }
+  }
 })
