@@ -1,6 +1,6 @@
 -- Active: 1695739375777@@127.0.0.1@3306
 
--- Criação / inserções na tabela de usuarios -- 
+-- Criação / inserções na tabela de usuarios --
 
 CREATE TABLE
     users(
@@ -11,10 +11,16 @@ CREATE TABLE
         created_at TEXT NOT NULL
     );
 
-SELECT * FROM users;
+DROP TABLE users;
+
+DELETE FROM users AS deleteUserById WHERE id ='u003';
+
+SELECT * FROM users AS GetAllUsers ;
+
+UPDATE users SET name='Luan' WHERE id='u003';
 
 INSERT INTO
-    users(
+    users AS createUser(
         id,
         name,
         email,
@@ -27,17 +33,13 @@ VALUES (
         'fulano@email.com',
         'fulano123',
         '26/09/2023'
-    );
-
-INSERT INTO
-    users (
-        id,
-        name,
-        email,
-        password,
-        created_at
-    )
-VALUES (
+    ), (
+        'u003',
+        'Beltrano',
+        'beltrano@email.com',
+        'beltrano123',
+        '05/09/2023'
+    ), (
         'u002',
         'Ciclano',
         'ciclano@email.com',
@@ -45,23 +47,9 @@ VALUES (
         '12/09/2023'
     );
 
-INSERT INTO
-    users (
-        id,
-        name,
-        email,
-        password,
-        created_at
-    )
-VALUES (
-        'u003',
-        'Beltrano',
-        'beltrano@email.com',
-        'beltrano123',
-        '05/09/2023'
-    );
+SELECT * FROM users AS getUserByQuery WHERE name LIKE '%cl%';
 
--- Criação / inserções na tabela de produtos -- 
+-- Criação / inserções na tabela de produtos --
 
 CREATE TABLE
     products(
@@ -72,12 +60,14 @@ CREATE TABLE
         image_url TEXT NOT NULL
     );
 
+DELETE FROM products AS deleteProductsById WHERE id ='prod001';
 
+DROP TABLE products;
 
-SELECT * FROM products;
+SELECT * FROM products AS getAllProducts;
 
 INSERT INTO
-    products(
+    products AS createProducts(
         id,
         name,
         price,
@@ -90,68 +80,37 @@ VALUES (
         250.0,
         'Melhor mouse do mercado!',
         'https://picsum.photos/seed/Mouse%20gamer/400'
-    );
-
-INSERT INTO
-    products(
-        id,
-        name,
-        price,
-        description,
-        image_url
-    )
-VALUES (
+    ), (
         'prod002',
         'Monitor',
         1550.0,
         'Melhor monitor do mercado!',
         'https://picsum.photos/seed/Mouse%20gamer/400'
-    );
-
-INSERT INTO
-    products(
-        id,
-        name,
-        price,
-        description,
-        image_url
-    )
-VALUES (
+    ), (
         'prod003',
         'Cadeira gammer',
         1100.0,
         'Cadeira Gammer do Mercado!',
         'https://picsum.photos/seed/Mouse%20gamer/400'
-    );
-
-INSERT INTO
-    products(
-        id,
-        name,
-        price,
-        description,
-        image_url
-    )
-VALUES (
+    ), (
         'prod004',
-        'Teclado Mecanico',
-        1000.0,
-        'Melhor teclado 60% do mercado',
-        'https://picsum.photos/seed/Mouse%20gamer/400'
-    );
-
-INSERT INTO
-    products(
-        id,
-        name,
-        price,
-        description,
-        image_url
-    )
-VALUES (
-        'prod005',
         'Web cam ',
         150.0,
         'Resolução 4k!',
         'https://picsum.photos/seed/Mouse%20gamer/400'
     );
+
+SELECT *
+FROM
+    products AS getProductsByQuery
+WHERE name LIKE '%gammer%';
+
+UPDATE products
+SET
+    id = 'prod010',
+    name = 'Monitor Gammer',
+    price = 240.00,
+    description = '160hz',
+    image_url = 'https://picsum.photos/seed/Mouse%20gamer/400'
+WHERE id = 'prod003';
+
