@@ -1,4 +1,4 @@
--- Active: 1695739375777@@127.0.0.1@3306
+-- Active: 1696354284052@@127.0.0.1@3306
 
 -- Criação / inserções na tabela de usuarios --
 
@@ -114,3 +114,44 @@ SET
     image_url = 'https://picsum.photos/seed/Mouse%20gamer/400'
 WHERE id = 'prod003';
 
+-- Purchases --
+
+CREATE TABLE
+    purchases (
+        id TEXT PRIMARY KEY UNIQUE NOT NULL,
+        buyer TEXT NOT NULL,
+        total_price REAL NOT NULL,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (buyer) REFERENCES users(id)
+    );
+
+DROP TABLE purchases;
+
+INSERT INTO purchases
+VALUES (
+        'p001',
+        'u001',
+        1500,
+        datetime('now', 'localtime')
+    ), (
+        'p002',
+        'u002',
+        1986,
+        datetime('now', 'localtime')
+    );
+
+INSERT INTO purchases
+VALUES (
+        'p003',
+        'u003',
+        150,
+        datetime('now', 'localtime')
+    );
+
+SELECT * FROM purchases;
+
+UPDATE purchases SET total_price = 500 WHERE id = 'p003';
+
+SELECT users.id, purchases.id, users.name, users.email, purchases.total_price, purchases.created_at
+FROM users
+    INNER JOIN purchases ON users.id = purchases.buyer;
