@@ -1,4 +1,4 @@
--- Active: 1696354284052@@127.0.0.1@3306
+-- Active: 1696544298299@@127.0.0.1@3306
 
 -- Criação / inserções na tabela de usuarios --
 
@@ -122,7 +122,9 @@ CREATE TABLE
         buyer TEXT NOT NULL,
         total_price REAL NOT NULL,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (buyer) REFERENCES users(id)
+        FOREIGN KEY (buyer) REFERENCES users(id) 
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
     );
 
 DROP TABLE purchases;
@@ -170,9 +172,9 @@ CREATE TABLE
         product_id TEXT NOT NULL,
         quantity INTEGER NOT NULL,
         FOREIGN KEY (purchase_id) REFERENCES purchases(id),
-        FOREIGN KEY (product_id) REFERENCES products(id)
-        ON UPDATE CASCADE -- efeito cascata ao atualizar id na tabela users
-        ON DELETE CASCADE -- efeito cascata ao atualizar id na tabela users
+        FOREIGN KEY (product_id) REFERENCES products(id) 
+        ON UPDATE CASCADE 
+        ON DELETE CASCADE 
     );
 
 DROP TABLE purchases_products;
@@ -195,5 +197,6 @@ FROM purchases_products
     LEFT JOIN purchases AS pur ON purchases_products.purchase_id = pur.id
     INNER JOIN products AS prod ON purchases_products.product_id = prod.id;
 
-
-    UPDATE purchases_products SET product_id = 'prod002' WHERE purchase_id = 'p001';
+UPDATE purchases_products
+SET product_id = 'prod002'
+WHERE purchase_id = 'p001';
