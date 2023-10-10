@@ -1,4 +1,4 @@
--- Active: 1696544298299@@127.0.0.1@3306
+-- Active: 1696354284052@@127.0.0.1@3306
 
 -- Criação / inserções na tabela de usuarios --
 
@@ -8,7 +8,7 @@ CREATE TABLE
         name TEXT NOT NULL,
         email TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
-        created_at TEXT NOT NULL
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP
     );
 
 DROP TABLE users;
@@ -16,6 +16,8 @@ DROP TABLE users;
 DELETE FROM users AS deleteUserById WHERE id ='u003';
 
 SELECT * FROM users AS GetAllUsers ;
+
+SELECT id  FROM users WHERE id ='u001';
 
 UPDATE users SET name='Luan' WHERE id='u003';
 
@@ -32,19 +34,19 @@ VALUES (
         'Fulano',
         'fulano@email.com',
         'fulano123',
-        '26/09/2023'
+        datetime('now', 'localtime')
     ), (
         'u003',
         'Beltrano',
         'beltrano@email.com',
         'beltrano123',
-        '05/09/2023'
+        datetime('now', 'localtime')
     ), (
         'u002',
         'Ciclano',
         'ciclano@email.com',
         'ciclano123',
-        '12/09/2023'
+        datetime('now', 'localtime')
     );
 
 SELECT * FROM users AS getUserByQuery WHERE name LIKE '%cl%';
@@ -122,9 +124,7 @@ CREATE TABLE
         buyer TEXT NOT NULL,
         total_price REAL NOT NULL,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (buyer) REFERENCES users(id) 
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
+        FOREIGN KEY (buyer) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE
     );
 
 DROP TABLE purchases;
@@ -172,9 +172,7 @@ CREATE TABLE
         product_id TEXT NOT NULL,
         quantity INTEGER NOT NULL,
         FOREIGN KEY (purchase_id) REFERENCES purchases(id),
-        FOREIGN KEY (product_id) REFERENCES products(id) 
-        ON UPDATE CASCADE 
-        ON DELETE CASCADE 
+        FOREIGN KEY (product_id) REFERENCES products(id) ON UPDATE CASCADE ON DELETE CASCADE
     );
 
 DROP TABLE purchases_products;
