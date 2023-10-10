@@ -1,4 +1,4 @@
--- Active: 1696354284052@@127.0.0.1@3306
+-- Active: 1696544298299@@127.0.0.1@3306
 
 -- Criação / inserções na tabela de usuarios --
 
@@ -122,7 +122,9 @@ CREATE TABLE
         buyer TEXT NOT NULL,
         total_price REAL NOT NULL,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (buyer) REFERENCES users(id)
+        FOREIGN KEY (buyer) REFERENCES users(id) 
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
     );
 
 DROP TABLE purchases;
@@ -152,6 +154,49 @@ SELECT * FROM purchases;
 
 UPDATE purchases SET total_price = 500 WHERE id = 'p003';
 
-SELECT users.id, purchases.id, users.name, users.email, purchases.total_price, purchases.created_at
+SELECT
+    users.id,
+    purchases.id,
+    users.name,
+    users.email,
+    purchases.total_price,
+    purchases.created_at
 FROM users
     INNER JOIN purchases ON users.id = purchases.buyer;
+
+--Table REFERENCES
+
+CREATE TABLE
+    purchases_products(
+        purchase_id TEXT NOT NULL,
+        product_id TEXT NOT NULL,
+        quantity INTEGER NOT NULL,
+        FOREIGN KEY (purchase_id) REFERENCES purchases(id),
+        FOREIGN KEY (product_id) REFERENCES products(id) 
+        ON UPDATE CASCADE 
+        ON DELETE CASCADE 
+    );
+
+DROP TABLE purchases_products;
+
+SELECT * FROM purchases_products;
+
+INSERT INTO purchases_products
+VALUES ('p001', 'prod002', 4), ('p002', 'prod001', 3), ('p003', 'prod004', 4);
+
+SELECT
+    pur.buyer AS Usuario,
+    pur.created_at AS dataDaCompra,
+    prod.name AS Produto,
+    prod.description,
+    purchases_products.product_id,
+    purchases_products.purchase_id,
+    purchases_products.quantity,
+    pur.total_price
+FROM purchases_products
+    LEFT JOIN purchases AS pur ON purchases_products.purchase_id = pur.id
+    INNER JOIN products AS prod ON purchases_products.product_id = prod.id;
+
+UPDATE purchases_products
+SET product_id = 'prod002'
+WHERE purchase_id = 'p001';
