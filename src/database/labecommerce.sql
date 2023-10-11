@@ -1,4 +1,4 @@
--- Active: 1696354284052@@127.0.0.1@3306
+-- Active: 1696544298299@@127.0.0.1@3306
 
 -- Criação / inserções na tabela de usuarios --
 

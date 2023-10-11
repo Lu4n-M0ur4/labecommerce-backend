@@ -15,7 +15,7 @@ import {
 } from './dataBase'
 import express, { Request, Response } from 'express'
 import cors from 'cors'
-import { TProducts, TUsers } from './types'
+import { TProducts, TPurchase, TPurchaseProd, TUsers } from './types'
 
 const app = express()
 app.use(express.json())
@@ -300,9 +300,66 @@ app.put('/products/:id', async (req: Request, res: Response) => {
       description = '${newDescription || product.description}',
       image_url = '${newImage || product.image_url}'
       WHERE id = '${productsIdToEdit}'
-      `
-    );
+      `,
+    )
     res.status(200).send({ message: 'Produto atualizado com successo' })
+  } catch (error) {
+    if (error instanceof Error) {
+      res.send(error.message)
+    }
+  }
+})
+
+// Purchases
+
+app.post('/purchases', async (req: Request, res: Response) => {
+  try {
+    const { id, buyer, price }: TPurchase = req.body
+    const { products }: TPurchaseProd = req.body
+
+    const [results] = await db.raw(`
+    SELECT id FROM purchases WHERE id ='${id}'
+    `)
+
+    if (
+      !results ||
+      typeof id !== 'string' ||
+      typeof buyer !== 'string' ||
+      typeof price !== 'number' ||
+      products.length <= 0
+    ) {
+      res.statusCode = 404
+      throw new Error('Digite um produto válido !!! ')
+    }
+
+    const [searchId] = await db.raw(`
+        SELECT id FROM users WHERE id ='${buyer}'
+        `)
+
+    if (!searchId) {
+      res.statusCode = 404
+      throw new Error('Informe um usuário válido')
+    }
+
+    
+  
+    console.log(products)
+
+
+    await db.raw(`
+    INSERT INTO 
+    purchases (id, buyer,total_price,created_at) 
+    VALUES ('${id}','${buyer}','${price}',DATETIME('now', 'localtime'))
+    `)
+
+  
+
+
+
+    
+
+
+    res.status(200).send({ message: 'Pedido realizado com sucesso' })
   } catch (error) {
     if (error instanceof Error) {
       res.send(error.message)
