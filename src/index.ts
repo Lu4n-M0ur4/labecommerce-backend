@@ -322,11 +322,10 @@ app.post('/purchases', async (req: Request, res: Response) => {
     `)
 
     if (
-      !results ||
+      results ||
       typeof id !== 'string' ||
       typeof buyer !== 'string' ||
-      typeof price !== 'number' ||
-      products.length <= 0
+      typeof price !== 'number'
     ) {
       res.statusCode = 404
       throw new Error('Digite um produto válido !!! ')
@@ -341,23 +340,47 @@ app.post('/purchases', async (req: Request, res: Response) => {
       throw new Error('Informe um usuário válido')
     }
 
-    
-  
-    console.log(products)
-
-
     await db.raw(`
     INSERT INTO 
     purchases (id, buyer,total_price,created_at) 
     VALUES ('${id}','${buyer}','${price}',DATETIME('now', 'localtime'))
     `)
 
-  
+    res.status(200).send({ message: 'Pedido realizado com sucesso' })
+  } catch (error) {
+    if (error instanceof Error) {
+      res.send(error.message)
+    }
+  }
+})
 
+app.delete('/purchases/:id', async (req: Request, res: Response) => {
+  try {
+    const idToDel: string = req.params.id
 
+    const [searchId] = await db.raw(`
+    SELECT id FROM purchases WHERE id = '${idToDel}'
+    `)
 
-    
+    if (!searchId) {
+      res.statusCode = 404
+      throw new Error("Pedido cancelado com sucesso")
+    }
 
+    await db.raw(`
+    DELETE FROM purchases WHERE id ='${searchId.id}';
+    `)
+
+    console.log(searchId)
+    // if (
+    //   results ||
+    //   typeof id !== 'string' ||
+    //   typeof buyer !== 'string' ||
+    //   typeof price !== 'number'
+    // ) {
+    //   res.statusCode = 404
+    //   throw new Error('Digite um produto válido !!! ')
+    // }
 
     res.status(200).send({ message: 'Pedido realizado com sucesso' })
   } catch (error) {
