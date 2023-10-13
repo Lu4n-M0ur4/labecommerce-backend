@@ -254,15 +254,9 @@ app.put('/users/:id', (req: Request, res: Response): void => {
 
 app.put('/products/:id', async (req: Request, res: Response) => {
   try {
-    const productsIdToEdit = req.params.id
+    const productsIdToEdit:string = req.params.id
 
-    // const productSearch = products.find(
-    //   (product) => product.id === productsIdToEdit,
-    // )
-
-    const [productSearch] = await db.raw(
-      `SELECT id FROM products WHERE id = "${productsIdToEdit}"`,
-    )
+    const [productSearch] = await db('products').where({id:productsIdToEdit})
 
     if (!productSearch) {
       res.statusCode = 404
@@ -286,23 +280,23 @@ app.put('/products/:id', async (req: Request, res: Response) => {
       throw new Error('Informe o body de maneira correta')
     }
 
-    const { product } = await db.raw(
-      `SELECT * FROM products WHERE id = "${productsIdToEdit}"`,
-    )
-    // updateProducts(productsIdToEdit, newId, newName, newPrice, newDescription)
 
-    await db.raw(
-      `UPDATE products 
-      SET 
-      id = '${newId || product.id}',
-      name = '${newName || product.name}',
-      price = '${newPrice || product.price}',
-      description = '${newDescription || product.description}',
-      image_url = '${newImage || product.image_url}'
-      WHERE id = '${productsIdToEdit}'
-      `,
-    )
+    const [product] = await db('products').where({id:productsIdToEdit})
+    
+    console.log(product)
+
+    const updatedProduct = {
+      id : newId || product.id,
+       name : newName || product.name,
+       price : newPrice || product.price,
+       description : newDescription || product.description,
+       image_url : newImage || product.image_url
+    }
+
+    await db('products').update(updatedProduct).where({id:productsIdToEdit})
+
     res.status(200).send({ message: 'Produto atualizado com successo' })
+
   } catch (error) {
     if (error instanceof Error) {
       res.send(error.message)
@@ -315,11 +309,8 @@ app.put('/products/:id', async (req: Request, res: Response) => {
 app.post('/purchases', async (req: Request, res: Response) => {
   try {
     const { id, buyer, price }: TPurchase = req.body
-    const { products }: TPurchaseProd = req.body
 
-    const [results] = await db.raw(`
-    SELECT id FROM purchases WHERE id ='${id}'
-    `)
+    const [results] = await db('purchases').where({id:id})
 
     if (
       results ||
@@ -331,20 +322,21 @@ app.post('/purchases', async (req: Request, res: Response) => {
       throw new Error('Digite um produto válido !!! ')
     }
 
-    const [searchId] = await db.raw(`
-        SELECT id FROM users WHERE id ='${buyer}'
-        `)
+    const [searchId] = await db('users').where({id:buyer})
 
     if (!searchId) {
       res.statusCode = 404
       throw new Error('Informe um usuário válido')
     }
 
-    await db.raw(`
-    INSERT INTO 
-    purchases (id, buyer,total_price,created_at) 
-    VALUES ('${id}','${buyer}','${price}',DATETIME('now', 'localtime'))
-    `)
+    const newPurchases = {
+      id,
+      buyer,
+      total_price:price,
+      created_at: db.raw("DATETIME('now', 'localtime')")
+    }
+
+    await db("purchases").insert(newPurchases)
 
     res.status(200).send({ message: 'Pedido realizado com sucesso' })
   } catch (error) {
@@ -370,17 +362,6 @@ app.delete('/purchases/:id', async (req: Request, res: Response) => {
     await db.raw(`
     DELETE FROM purchases WHERE id ='${searchId.id}';
     `)
-
-    console.log(searchId)
-    // if (
-    //   results ||
-    //   typeof id !== 'string' ||
-    //   typeof buyer !== 'string' ||
-    //   typeof price !== 'number'
-    // ) {
-    //   res.statusCode = 404
-    //   throw new Error('Digite um produto válido !!! ')
-    // }
 
     res.status(200).send({ message: 'Pedido realizado com sucesso' })
   } catch (error) {
