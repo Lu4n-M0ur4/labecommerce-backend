@@ -1,4 +1,4 @@
--- Active: 1696354284052@@127.0.0.1@3306
+-- Active: 1696544298299@@127.0.0.1@3306
 
 -- Criação / inserções na tabela de usuarios --
 
@@ -66,7 +66,7 @@ DELETE FROM products AS deleteProductsById WHERE id ='prod001';
 
 DROP TABLE products;
 
-SELECT * FROM products AS getAllProducts;
+SELECT * FROM products;
 
 INSERT INTO
     products AS createProducts(
@@ -198,3 +198,14 @@ FROM purchases_products
 UPDATE purchases_products
 SET product_id = 'prod002'
 WHERE purchase_id = 'p001';
+
+SELECT   
+'products.id',
+'products.name',
+'products.price',
+'products.description',
+'products.image_url',
+'purchases_products.quantity'
+FROM purchases_products 
+INNER JOIN products ON products.id = purchases_products.product_id 
+WHERE purchases_products.purchase_id = 'p003';
