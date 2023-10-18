@@ -15,7 +15,7 @@ DROP TABLE users;
 
 DELETE FROM users AS deleteUserById WHERE id ='u003';
 
-SELECT * FROM users AS GetAllUsers ;
+SELECT * FROM users
 
 SELECT id  FROM users WHERE id ='u001';
 
