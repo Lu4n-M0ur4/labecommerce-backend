@@ -8,7 +8,7 @@ CREATE TABLE
         name TEXT NOT NULL,
         email TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        created_at DATETIME datetime('now', 'localtime')
     );
 
 DROP TABLE users;
