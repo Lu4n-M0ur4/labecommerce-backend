@@ -1,6 +1,6 @@
 # API /labecommerce - Backend Application
 
-Bem-vindo à **API /labecommerce**, uma aplicação de back end para um sistema de e-commerce, desenvolvida em Node.js, TypeScript e knex, utilizando o SQLite como banco de dados.
+Bem-vindo à **API /labecommerce**, uma aplicação de back end para um sistema de e-commerce, desenvolvida em Node.js, Express, TypeScript e knex, utilizando o SQLite como banco de dados.
 
 ## Funcionalidades
 
